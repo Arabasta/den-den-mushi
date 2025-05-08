@@ -33,14 +33,21 @@ wss.on('connection', (ws) => {
 
     // forward client input to the shell
     ws.on('message', (data) => {
-        shell.stdin.write(data);
+        if (data === '\x03') { // Ctrl+C
+            shell.kill('SIGINT');
+        } else {
+            shell.stdin.write(data);
+        }
     });
 
-    // cleanup on disconnect
-    ws.on('close', () => {
+    const cleanup = () => {
         shell.kill();
         console.log('Terminal disconnected');
-    });
+    };
+
+    shell.on('exit', cleanup);
+    ws.on('close', cleanup);
+    ws.on('error', cleanup);
 });
 
 // start server

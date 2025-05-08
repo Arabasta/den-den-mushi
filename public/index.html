@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<meta charset="UTF-16">
 <head>
-    <title>xterm.js demo</title>
+    <title>Den Den Mushi Terminal</title>
     <link rel="stylesheet" href="https://unpkg.com/xterm@latest/css/xterm.css"/>
     <style>
         body {
@@ -17,42 +18,98 @@
 </head>
 <body>
 <div id="terminal"></div>
+
 <script src="https://unpkg.com/xterm@latest/lib/xterm.js"></script>
 <script src="https://unpkg.com/xterm-addon-fit@latest/lib/xterm-addon-fit.js"></script>
 <script>
-    const term = new Terminal();
+    const port = 45005;
+
+    const term = new Terminal( {
+        cursorBlink: true,
+        theme: {
+            background: '#282a36', // dracula
+            foreground: '#f8f8f2',
+            cursor: '#FFFFFF',
+            selection: '#FFFFFF',
+        },
+    });
+
     const fitAddon = new FitAddon.FitAddon();
     term.loadAddon(fitAddon);
     term.open(document.getElementById('terminal'));
     fitAddon.fit();
 
-    // connect to WebSocket
-    const ws = new WebSocket(`ws://${window.location.hostname}:45005`);
+    let socket;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
+    const reconnectDelay = 2000; // 2 seconds
 
-    // handle data from the server
-    ws.onmessage = (event) => {
-        console.log('Received from server:', event.data);
-        term.write(event.data);
-    };
+    function connectWebSocket() {
+        socket = new WebSocket(`ws://${window.location.hostname}:${port}`);
 
-    // send terminal input to server on Enter
-    let currentInput = ''; // hold the current line being typed
+        socket.onmessage = (event) => {
+            console.log('Received from server:', event.data);
+            term.write(event.data);
+        };
 
+        socket.onopen = () => {
+            reconnectAttempts = 0;
+            term.write('\r\n\x1b[32mConnected to terminal session\x1b[0m\r\n');
+            term.focus();
+        };
+
+        socket.onerror = (error) => {
+            term.write(`\r\n\x1b[31mConnection error: ${error.message}\x1b[0m\r\n`);
+        };
+
+        socket.onclose = () => {
+            if (reconnectAttempts < maxReconnectAttempts) {
+                reconnectAttempts++;
+                term.write(`\r\x1b[33mConnection lost. Reconnecting (attempt ${reconnectAttempts}/${maxReconnectAttempts})...\x1b[0m\r\n`);
+                setTimeout(connectWebSocket, reconnectDelay);
+            } else {
+                term.write('\r\x1b[31mFailed to reconnect. Please refresh the page.\x1b[0m\r\n');
+            }
+        };
+    }
+
+    connectWebSocket();
+
+    let currentInput = '';
     term.onData((data) => {
-        // handle keys
-        if (data === '\x7f') { // backspace
-            currentInput = currentInput.slice(0, -1); // remove last char
-            term.write('\b \b');  // delete char from screen
+        if (!socket || socket.readyState !== WebSocket.OPEN) return;
+
+        // backspace
+        if (data === '\x7f') {
+            if (currentInput.length > 0) {
+                currentInput = currentInput.slice(0, -1);
+                term.write('\b \b');
+            }
+            return;
         }
-        else if (data === '\r') { // enter key
-            ws.send(currentInput + '\n'); // send input to server
-            currentInput = '';  // reset current input
-            term.write('\r\n'); // add newline after sending
+
+        // Enter key
+        if (data === '\r') {
+            socket.send(currentInput + '\n');
+            currentInput = '';
+            term.write('\r\n');
+            return;
         }
-        else { // regular key
-            currentInput += data; // add char
-            term.write(data); // display char
+
+        // handle regular input
+        currentInput += data;
+        term.write(data);
+    });
+
+    term.attachCustomKeyEventHandler((e) => {
+        if (!socket || socket.readyState !== WebSocket.OPEN) return false;
+
+        // Ctrl+C = SIGINT when there's no selection
+        if (e.ctrlKey && e.key === 'c' && !term.hasSelection()) {
+            socket.send('\x03'); // send SIGINT
+            return false;
         }
+        return true;
     });
 
     // handle window resize
