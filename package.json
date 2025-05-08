@@ -1,0 +1,17 @@
+{
+  "name": "den-den-mushi",
+  "version": "1.0.0",
+  "description": "Browser-based Terminal emulator for low-latency shell access to cloud compute instances",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "ws": "^8.18.2"
+  }
+}
