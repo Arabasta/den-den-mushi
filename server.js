@@ -19,7 +19,13 @@ wss.on('connection', (ws) => {
         shell = spawn('cmd.exe');
     } else {
         // wrap bash in pseudo-terminal
-        shell = spawn('script', ['-q', '-c', 'bash', '/dev/null']);
+        shell = spawn('script', ['-q', '-c', 'bash --norc', '/dev/null'], {
+            env: {
+                ...process.env,
+                TERM: 'xterm-256color',
+                PS1: '[\\u@\\h \\W]\\$ '
+            }
+        });
     }
 
     // forward output to client
@@ -31,10 +37,14 @@ wss.on('connection', (ws) => {
         ws.send(data.toString());
     });
 
-    // forward client input to the shell
+    // handle client input
     ws.on('message', (data) => {
         if (data === '\x03') { // Ctrl+C
             shell.kill('SIGINT');
+        } else if (data === '\x04') { // Ctrl+D
+            shell.stdin.end();
+        } else if (data === '\x1a') { // Ctrl+Z
+            shell.kill('SIGTSTP');
         } else {
             shell.stdin.write(data);
         }

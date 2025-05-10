@@ -138,11 +138,24 @@
     term.attachCustomKeyEventHandler((e) => {
         if (!socket || socket.readyState !== WebSocket.OPEN) return false;
 
-        // Ctrl+C = SIGINT when there's no selection
+        // Ctrl+C = SIGINT only when there's no selection
         if (e.ctrlKey && e.key === 'c' && !term.hasSelection()) {
-            socket.send('\x03'); // send SIGINT
+            socket.send('\x03'); // SIGINT
             return false;
         }
+
+        // Ctrl+D
+        if (e.ctrlKey && e.key === 'd') {
+            socket.send('\x04'); // EOF
+            return false;
+        }
+
+        // Ctrl+Z
+        if (e.ctrlKey && e.key === 'z') {
+            socket.send('\x1a'); // SIGTSTP
+            return false;
+        }
+
         return true;
     });
 
