@@ -15,17 +15,17 @@ wss.on('connection', (ws) => {
     let shell;
 
     // start shell process
-    if (process.platform === 'win32') {
-        shell = spawn('cmd.exe');
+    if (process.platform === 'linux') {
+        shell = spawn(
+            'script', // create terminal session
+            ['-q', // quiet
+                '-c', 'bash', // use bash shell
+                '/dev/null']); // discard output
     } else {
-        // wrap bash in pseudo-terminal
-        shell = spawn('script', ['-q', '-c', 'bash --norc', '/dev/null'], {
-            env: {
-                ...process.env,
-                TERM: 'xterm-256color',
-                PS1: '[\\u@\\h \\W]\\$ '
-            }
-        });
+        console.log('Platform not supported: ' + process.platform);
+        ws.send('Platform not supported');
+        ws.close();
+        return;
     }
 
     // forward output to client
@@ -63,5 +63,5 @@ wss.on('connection', (ws) => {
 // start server
 const PORT = 45005;
 server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
