@@ -12,21 +12,18 @@ app.use(express.static('public'));
 wss.on('connection', (ws) => {
     console.log('New terminal connection');
 
-    let shell;
-
-    // start shell process
-    if (process.platform === 'linux') {
-        shell = spawn(
-            'script', // create terminal session
-            ['-q', // quiet
-                '-c', 'bash', // use bash shell
-                '/dev/null']); // discard output
-    } else {
+    if (process.platform !== 'linux') {
         console.log('Platform not supported: ' + process.platform);
-        ws.send('Platform not supported');
-        ws.close();
+        ws.close(1003, 'Platform not supported');
         return;
     }
+
+    const shell = spawn(
+        'script', // create terminal session
+        ['-q', // quiet
+            '-c', 'bash', // use bash shell
+            '/dev/null']); // discard output
+
 
     // forward output to client
     shell.stdout.on('data', (data) => {
@@ -50,14 +47,17 @@ wss.on('connection', (ws) => {
         }
     });
 
-    const cleanup = () => {
+    const cleanup = (code, reason) => {
         shell.kill();
-        console.log('Terminal disconnected');
+        if (ws.readyState === ws.OPEN) {
+            ws.close(code, reason);
+        }
     };
 
-    shell.on('exit', cleanup);
-    ws.on('close', cleanup);
-    ws.on('error', cleanup);
+
+    ws.on('close', () => cleanup(1000, 'Normal closure'));
+    shell.on('exit', () => cleanup(1001, 'Shell terminated'));
+
 });
 
 // start server
