@@ -1,14 +1,14 @@
 import {term} from './terminal.js';
-import {getSocket} from './websocket.js';
+import socketManager from './websocket.js';
 
 let currentInput = '';
 
 export function registerHandlers() {
-
-    const socket = getSocket();
-
     term.onData((data) => {
-        if (!socket || socket.readyState !== WebSocket.OPEN) return;
+        const socket = socketManager.getSocket();
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
+            return;
+        }
 
         // backspace
         if (data === '\x7f') {
@@ -19,7 +19,7 @@ export function registerHandlers() {
             return;
         }
 
-        // Enter key
+        // Enter
         if (data === '\r') {
             socket.send(currentInput + '\n');
             currentInput = '';
@@ -33,26 +33,24 @@ export function registerHandlers() {
     });
 
     term.attachCustomKeyEventHandler((e) => {
+        const socket = socketManager.getSocket();
         if (!socket || socket.readyState !== WebSocket.OPEN) return false;
 
-        // Ctrl+C = SIGINT only when there's no selection
-        if (e.ctrlKey && e.key === 'c' && !term.hasSelection()) {
-            socket.send('\x03'); // SIGINT
-            return false;
+        if (e.ctrlKey) {
+            const key = e.key.toLowerCase();
+            if (key === 'c') {
+                socket.send('\x03'); // SIGINT
+                return false;
+            }
+            if (key === 'd') {
+                socket.send('\x04'); // EOF
+                return false;
+            }
+            if (key === 'z') {
+                socket.send('\x1a'); // SIGTSTP
+                return false;
+            }
         }
-
-        // Ctrl+D
-        if (e.ctrlKey && e.key === 'd') {
-            socket.send('\x04'); // EOF
-            return false;
-        }
-
-        // Ctrl+Z
-        if (e.ctrlKey && e.key === 'z') {
-            socket.send('\x1a'); // SIGTSTP
-            return false;
-        }
-
         return true;
     });
 }
