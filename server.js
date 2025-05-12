@@ -1,7 +1,8 @@
 const express = require('express');
 const {createServer} = require('http');
 const {WebSocketServer} = require('ws');
-const {spawn} = require('child_process');
+const pty = require('node-pty');
+const os = require("node:os");
 
 const app = express();
 const server = createServer(app);
@@ -9,32 +10,23 @@ const wss = new WebSocketServer({server});
 
 app.use(express.static('public'));
 
-let shell;
+const shellType = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 
 wss.on('connection', (ws) => {
         console.log('New terminal connection');
 
-        if (process.platform === 'linux') {
-            shell = spawn(
-                'script', // create terminal session
-                ['-q', // quiet
-                    '-c', 'bash', // use bash shell
-                    '/dev/null']); // discard output
-        } else if (process.platform === 'darwin') {
-            shell = spawn('bash',  ['-i'],);
-        } else {
-            console.log('Platform not supported: ' + process.platform);
-            ws.close(1003, 'Platform not supported');
-            return;
-        }
-
+        const shell = pty.spawn(shellType, [],
+            {
+                name: 'xterm-color',
+                cols: 80,
+                rows: 30,
+                cwd: process.env.HOME,
+                env: process.env,
+            }
+        );
 
         // forward output to client
-        shell.stdout.on('data', (data) => {
-            ws.send(data.toString());
-        });
-
-        shell.stderr.on('data', (data) => {
+        shell.on('data', (data) => {
             ws.send(data.toString());
         });
 
@@ -43,11 +35,11 @@ wss.on('connection', (ws) => {
             if (data === '\x03') { // Ctrl+C
                 shell.kill('SIGINT');
             } else if (data === '\x04') { // Ctrl+D
-                shell.stdin.end();
+                shell.kill('SIGTERM');
             } else if (data === '\x1a') { // Ctrl+Z
                 shell.kill('SIGTSTP');
             } else {
-                shell.stdin.write(data);
+                shell.write(data);
             }
         });
 
@@ -58,13 +50,10 @@ wss.on('connection', (ws) => {
             }
         };
 
-
         ws.on('close', () => cleanup(1000, 'Normal closure'));
         shell.on('exit', () => cleanup(1001, 'Shell terminated'));
-
     }
-)
-;
+);
 
 // start server
 const PORT = 45005;
