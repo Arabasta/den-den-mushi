@@ -29,8 +29,14 @@ npm start
 
 ## Todo
 - [x] Add support for ctrl+c
-- [ ] Fix shell echoing back all input 
-- [ ] Fix able to backspace prompt
+- [x] Fix shell echoing back all input 
+- [x] Fix able to backspace prompt
 - [ ] Add key up/down support
-- [ ] Add support for ctrl+z, ctrl+d
-- [ ] Add support for Windows / MacOS
+- [x] Add support for ctrl+z, ctrl+d
+- [ ] Add ctrl+r support
+- [ ] Add support for ctrl+v
+- [ ] Add support for ctrl+shift+c
+- [ ] Add support for ctrl+shift+v
+- [ ] Add vim support
+- [ ] Add more themes
+- [x] Add support for Windows / MacOS
