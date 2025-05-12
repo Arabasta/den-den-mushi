@@ -24,7 +24,7 @@ wss.on('connection', (ws) => {
                 env: {
                     ...process.env,
                     TERM: 'xterm-256color',
-                    PROMPT_COMMAND: 'stty -echo >/dev/null 2>&1', // disable echoing input
+                    //PROMPT_COMMAND: 'stty -echo >/dev/null 2>&1', // disable echoing input
                 },
             }
         );
@@ -36,15 +36,7 @@ wss.on('connection', (ws) => {
 
         // handle client input
         ws.on('message', (data) => {
-            if (data === '\x03') { // Ctrl+C
-                shell.kill('SIGINT');
-            } else if (data === '\x04') { // Ctrl+D
-                shell.kill('SIGTERM');
-            } else if (data === '\x1a') { // Ctrl+Z
-                shell.kill('SIGTSTP');
-            } else {
-                shell.write(data);
-            }
+            shell.write(data);
         });
 
         const cleanup = (code, reason) => {
