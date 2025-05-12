@@ -4,20 +4,35 @@
 <head>
     <title>Den Den Mushi Terminal</title>
     <link rel="stylesheet" href="https://unpkg.com/xterm@latest/css/xterm.css"/>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        #terminal {
-            width: 100vw;
-            height: 100vh;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
+<div id="header">
+    <div class="left">
+        <strong>Den Den Mushi Terminal</strong>
+    </div>
+    <div class="right">
+        <button class="menu-button" id="menuButton">⋮</button>
+    </div>
+</div>
+
+<div class="dropdown" id="settingsMenu">
+    <p><strong>Settings</strong></p>
+    <fieldset>
+        <legend><strong>Theme:</strong></legend>
+        <label>
+            <input type="radio" name="theme" value="dark">
+            Dracula
+        </label><br>
+        <label>
+            <input type="radio" name="theme" value="light">
+            Light
+        </label>
+    </fieldset>
+</div>
+
 <div id="terminal"></div>
-<script type="module" src="main.js"></script>
+<script type="module" src="js/main.js"></script>
+<script type="module" src="js/settings/settings.js"></script>
 </body>
 </html>

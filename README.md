@@ -40,5 +40,4 @@ npm start
 
 ## Todo
 - [ ] Fix ctrl+c
-- [ ] Add vim support
-- [ ] Add more themes
+- [ ] Fix theme selector
