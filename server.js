@@ -21,7 +21,11 @@ wss.on('connection', (ws) => {
                 cols: 80,
                 rows: 30,
                 cwd: process.env.HOME,
-                env: process.env,
+                env: {
+                    ...process.env,
+                    TERM: 'xterm-256color',
+                    PROMPT_COMMAND: 'stty -echo >/dev/null 2>&1', // disable echoing input
+                },
             }
         );
 
