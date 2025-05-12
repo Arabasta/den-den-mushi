@@ -1,14 +1,12 @@
 # Den Den Mushi Shell
 Browser-based Terminal emulator for easy low latency shell access to cloud compute instances
 
-![demo.png](img/example.png)
+![example.gif](assets/example.gif)
 
 ## Features
-- Type and Run commands
-- Backspace
-- Ctrl+C, Ctrl+Z, Ctrl+D
+- Run all commands through a web browser
+- Dark and light themes
 - Linux, MacOS, Windows support
-- that's it lol
 
 ## Prerequisites
 
@@ -39,5 +37,5 @@ npm start
 
 
 ## Todo
-- [ ] Fix ctrl+c
+- [ ] Fix ctrl+c doesn't terminate sequential commands
 - [ ] Fix theme selector
