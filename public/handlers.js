@@ -23,7 +23,7 @@ export function registerHandlers() {
         if (data === '\r') {
             socket.send(currentInput + '\n');
             currentInput = '';
-            term.write('\r\n');
+            term.write('\r');
             return;
         }
 
