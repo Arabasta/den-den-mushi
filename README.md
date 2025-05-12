@@ -5,9 +5,20 @@ Browser-based Terminal emulator for easy low latency shell access to cloud compu
 
 ## Features
 - Type and Run commands
-- Backspace, Ctrl+C
-- Linux support
+- Backspace
+- Ctrl+C, Ctrl+Z, Ctrl+D
+- Linux, MacOS, Windows support
 - that's it lol
+
+## Prerequisites
+
+```bash
+sudo yum install -y nodejs
+
+# required for node-pty
+sudo yum groupinstall "Development Tools" -y
+sudo yum install gcc-c++ make -y
+```
 
 ## Running
 
@@ -28,15 +39,6 @@ npm start
 
 
 ## Todo
-- [x] Add support for ctrl+c
-- [x] Fix shell echoing back all input 
-- [x] Fix able to backspace prompt
-- [ ] Add key up/down support
-- [x] Add support for ctrl+z, ctrl+d
-- [ ] Add ctrl+r support
-- [ ] Add support for ctrl+v
-- [ ] Add support for ctrl+shift+c
-- [ ] Add support for ctrl+shift+v
+- [ ] Fix ctrl+c
 - [ ] Add vim support
 - [ ] Add more themes
-- [x] Add support for Windows / MacOS
