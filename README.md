@@ -1,4 +1,4 @@
-# Den Den Mushi Shell
+# Den Den Mushi
 Browser-based Terminal emulator for easy low latency shell access to cloud compute instances
 
 ![example.gif](assets/example.gif)
