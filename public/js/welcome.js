@@ -32,5 +32,4 @@ export default function showAsciiArt(term) {
     art.forEach(line => {
         term.writeln(line);
     });
-    term.writeln('\nWelcome to Den Den Mushi Terminal\x1b[0m');
 }
