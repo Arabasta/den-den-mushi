@@ -1,3 +1,4 @@
+import {toggleSettingsMenu} from "./settings/settingsMenu.js";
 import socketManager from './websocket.js';
 import {registerHandlers} from './handlers.js';
 import showAsciiArt from "./welcome.js";

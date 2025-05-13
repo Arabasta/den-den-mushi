@@ -18,33 +18,30 @@
 
 <div class="dropdown" id="settingsMenu">
     <p><strong>Settings</strong></p>
-    <fieldset>
-        <legend><strong>Theme:</strong></legend>
-        <label>
-            <input type="radio" name="theme" value="Dracula">
-            Dracula
-        </label><br>
-        <label>
-            <input type="radio" name="theme" value="SolarizedLight">
-            Solarized Light
-        </label>
-        <label>
-            <input type="radio" name="theme" value="SolarizedDark">
-            Solarized Dark
-        </label>
-        <label>
-            <input type="radio" name="theme" value="GruvboxDark">
-            Gruvbox Dark
-        </label>
-        <label>
-            <input type="radio" name="theme" value="Monokai">
-            Monokai
-        </label>
-    </fieldset>
+    <label for="themeSelect"><strong>Theme:</strong></label>
+    <select id="themeSelect">
+        <option value="GruvboxDark">Gruvbox Dark</option>
+        <option value="Dracula">Dracula</option>
+        <option value="SolarizedLight">Solarized Light</option>
+        <option value="SolarizedDark">Solarized Dark</option>
+        <option value="Monokai">Monokai</option>
+    </select>
+
+    <br><br>
+
+    <label for="fontSelect"><strong>Font:</strong></label>
+    <select id="fontSelect">
+        <option value="Courier New">Courier New</option>
+        <option value="Monaco">Monaco</option>
+    </select>
+
+    <br><br>
+    <small>
+        Made by <a href="https://github.com/Arabasta" target="_blank" rel="noopener">Arabasta</a>
+    </small>
 </div>
 
 <div id="terminal"></div>
 <script type="module" src="js/main.js"></script>
-<script type="module" src="js/settings/settingsMenu.js"></script>
 </body>
 </html>
