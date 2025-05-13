@@ -1,5 +1,6 @@
-import {term} from './terminal.js';
+import {terminal} from './terminal.js';
 import socketManager from './websocket.js';
+const { term, fitAddon } = terminal;
 
 export function registerHandlers() {
     term.onData((data) => {

@@ -1,5 +1,5 @@
-import {Terminal} from "https://esm.sh/xterm";
-import {FitAddon} from "https://esm.sh/xterm-addon-fit";
+import { Terminal } from 'https://cdn.jsdelivr.net/npm/@xterm/xterm/+esm';
+import {FitAddon} from 'https://cdn.jsdelivr.net/npm/@xterm/addon-fit/+esm';
 
 const term = new Terminal({
     cursorBlink: true,
@@ -14,4 +14,4 @@ const term = new Terminal({
 const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);
 
-export {term, fitAddon};
+export const terminal = { term, fitAddon };

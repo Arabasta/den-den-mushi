@@ -1,15 +1,31 @@
-import {term, fitAddon} from './terminal.js';
 import socketManager from './websocket.js';
 import {registerHandlers} from './handlers.js';
 import showAsciiArt from "./welcome.js";
+import { terminal } from './terminal.js';
 
+const { term, fitAddon } = terminal;
 
-term.open(document.getElementById('terminal'));
-fitAddon.fit();
+document.addEventListener('DOMContentLoaded', () => {
+    const terminalElement = document.getElementById('terminal');
 
-showAsciiArt(term);
-socketManager.connect();
-registerHandlers();
+    if (!terminalElement) {
+        console.error('Terminal container not found!');
+        return;
+    }
 
-// handle window resize
-window.addEventListener('resize', () => fitAddon.fit());
+    term.open(terminalElement);
+    fitAddon.fit();
+
+    showAsciiArt(term);
+    socketManager.connect();
+    registerHandlers();
+
+    // handle window resize
+    window.addEventListener('resize', () => {
+        try {
+            fitAddon.fit();
+        } catch (e) {
+            console.error('Fit error:', e);
+        }
+    });
+});

@@ -1,5 +1,7 @@
-import {term} from "./terminal.js";
+import {terminal} from "./terminal.js";
 import {config} from './config.js';
+
+const { term, fitAddon } = terminal;
 
 const socketManager = {
     socket: null,
