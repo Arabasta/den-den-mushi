@@ -34,8 +34,3 @@ npm install
 ```bash
 npm start
 ```
-
-
-## Todo
-- [ ] Fix ctrl+c doesn't terminate sequential commands
-- [ ] Fix theme selector
