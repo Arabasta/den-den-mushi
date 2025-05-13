@@ -11,30 +11,15 @@ export function applyTheme(themeName) {
 
     term.options.theme = theme;
     localStorage.setItem("theme", themeName);
-
-    const radios = document.querySelectorAll('input[name="theme"]');
-    radios.forEach(radio => {
-        radio.checked = (radio.value === themeName);
-    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem("theme") || "Dracula";
+    const savedTheme = localStorage.getItem("theme") || "GruvboxDark";
     applyTheme(savedTheme);
+    document.getElementById('themeSelect').value = savedTheme;
 
-    // event listeners
-    const radios = document.querySelectorAll('input[name="theme"]');
-    radios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            console.log(`Theme changed to ${e.target.value}`);
-            applyTheme(e.target.value);
-        });
+    document.getElementById('themeSelect').addEventListener('change', e => {
+        applyTheme(e.target.value);
     });
 
-    // initial radio state
-    radios.forEach(radio => {
-        if (radio.value === savedTheme) {
-            radio.checked = true;
-        }
-    });
 });
