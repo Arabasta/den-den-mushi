@@ -1,5 +1,6 @@
 import { applyTheme} from "./themeSettings.js";
 import {applyFont} from "./fontSettings.js";
+import {applyFontSize} from "./fontSizeSettings.js";
 
 export function toggleSettingsMenu() {
     const menu = document.getElementById('settingsMenu');
