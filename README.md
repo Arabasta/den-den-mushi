@@ -1,5 +1,10 @@
 # Den Den Mushi
-Browser-based Terminal emulator for easy low latency shell access to cloud compute instances
+A minimal PoC for browser-based terminal access using WebSockets and PTY.
+
+## Background
+This project was originally built to explore low-latency, credential-less remote shell access. 
+
+The core idea later evolved into a split-trust SSH access platform deployed at DBS Bank (JumpHost) supporting 30k+ Linux servers.
 
 ![example.gif](assets/example.gif)
 
